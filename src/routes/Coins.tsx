@@ -1,8 +1,10 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { useQuery } from "react-query";
 
-interface CoinInterface {
+import { fetchCoins } from "../api";
+
+interface CoinInsData {
   id: string;
   name: string;
   symbol: string;
@@ -14,25 +16,17 @@ interface CoinInterface {
 
 
 const Coins = () => {
-  const [coins, setCoins] = useState<CoinInterface[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(()=>{
-    (async () => {
-      const coindata = await(await fetch("https://api.coinpaprika.com/v1/coins")).json();
-      setCoins(coindata.slice(0,100));
-      setLoading(false);
-    })(); // 함수바로실행
-  }, []);
-
+  
+  const { isLoading, data } = useQuery<CoinInsData[]>(["allCoins"], fetchCoins);
+  
   return(
     <Container>
       <Header>
         <Title>암호화폐</Title>
       </Header>
-      {loading ?  <Loader>Loading 😅</Loader>  :  
+      {isLoading ?  <Loader>Loading 😅</Loader>  :  
         <CoinsList>
-            {coins.map((coin)=>(
+            {data?.slice(0,100).map((coin)=>(
             <Coin key = {coin.id}>
               <Link
                 to={{

@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { Switch, Route, useLocation, useParams, useRouteMatch } from "react-router";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
+import { useQuery } from "react-query";
 
+import { fetchCoinInfo, fetchCoinPrice } from "../api";
 import Chart from "./Chart";
 import Price from "./Price";
 
@@ -71,49 +73,41 @@ interface PriceData {
 
 
 const Coin = () => {
-  const [loading, setLoading] = useState(true);
   const { coinId } = useParams<RouteParams>();
   const { state } = useLocation<RouteState>();
-  const [info, setInfo] = useState<InfoData>();
-  const [priceInfo, setPriceInfo] = useState<PriceData>();
   const priceMatch = useRouteMatch("/:coinId/price");
   const chartMatch = useRouteMatch("/:coinId/chart");
 
-  useEffect(()=> {
-    (async () => {
-      const infoData = await(await fetch(`https://api.coinpaprika.com/v1/coins/${coinId}`)).json();
-      const priceData = await (await fetch(`https://api.coinpaprika.com/v1/tickers/${coinId}`)).json();
-      setInfo(infoData);
-      setPriceInfo(priceData);
-      setLoading(false);
-    })();
-  }, [coinId]);
+  const { isLoading: infoLoading, data: infoData } = useQuery<InfoData>(["info", coinId], () => fetchCoinInfo(coinId));
+  const { isLoading: priceLoading, data: priceData } = useQuery<PriceData>(["price", coinId], () => fetchCoinPrice(coinId));
   
+  const loading = infoLoading || priceLoading;
+
   return (
     <Container>
       <Header>
         <Title>
-          {state?.name ? state.name : loading ? "Loading 😅" : info?.name}
+          {state?.name ? state.name : loading ? "Loading 😅" : infoData?.name}
         </Title>
       </Header>
       {loading ? 
         <Loader>Loading 😅</Loader> 
         : 
         <>
-          <SubTitle>{state?.name ? state.name : loading ? "Loading 😅" : info?.name} 소개</SubTitle>
-          <Description>{info?.description ? info.description : "정보없음" }</Description>
+          <SubTitle>{state?.name ? state.name : loading ? "Loading 😅" : infoData?.name} 소개</SubTitle>
+          <Description>{infoData?.description ? infoData.description : "정보없음" }</Description>
           <Overview>
             <OverviewItem>
               <span>순위</span>
-              <span>{info?.rank}</span>
+              <span>{infoData?.rank}</span>
             </OverviewItem>
             <OverviewItem>
               <span>심볼</span>
-              <span>{info?.symbol}</span>
+              <span>{infoData?.symbol}</span>
             </OverviewItem>
             <OverviewItem>
               <span>타입</span>
-              <span>{info?.type}</span>
+              <span>{infoData?.type}</span>
             </OverviewItem>
            </Overview>
            <Tabs>
@@ -126,7 +120,7 @@ const Coin = () => {
            </Tabs>
            <Switch>
              <Route path={`/:coinId/chart`}>
-               <Chart />
+               <Chart coinId={coinId} />
              </Route>
              <Route path={`/:coinId/price`}>
                <Price />
