@@ -19,8 +19,7 @@ const Coins = () => {
 
   useEffect(()=>{
     (async () => {
-      const response = await fetch("https://api.coinpaprika.com/v1/coins");
-      const coindata = await response.json();
+      const coindata = await(await fetch("https://api.coinpaprika.com/v1/coins")).json();
       setCoins(coindata.slice(0,100));
       setLoading(false);
     })(); // 함수바로실행
@@ -29,13 +28,21 @@ const Coins = () => {
   return(
     <Container>
       <Header>
-        <Title>Coins</Title>
+        <Title>암호화폐</Title>
       </Header>
       {loading ?  <Loader>Loading 😅</Loader>  :  
         <CoinsList>
             {coins.map((coin)=>(
             <Coin key = {coin.id}>
-                <Link to ={`/${coin.id}`}>{coin.name}</Link>
+              <Link
+                to={{
+                  pathname: `/${coin.id}`,  // Link를 통해 Coin페이지에서 코인이름을 넘겨받게해줌
+                  state: { name: coin.name },
+                }} 
+              >
+                <Img src={`https://coinicons-api.vercel.app/api/icon/${coin.symbol.toLowerCase()}`} />
+                {coin.name} 
+              </Link>
             </Coin>
             ))}
         </CoinsList> 
@@ -59,7 +66,8 @@ const Header = styled.header`
 
 const Title = styled.h1`
   color: ${(props) => props.theme.accentColor};
-  font-size: 30px;
+  font-size: 40px;
+  font-weight:bolder;
 `;
 
 const CoinsList = styled.ul`
@@ -70,16 +78,23 @@ const Coin = styled.li`
   border-radius: 15px;
   margin-bottom: 10px;
   a {
+    display: flex;
+    align-items: center;
     color: ${(props) => props.theme.bgColor};
     padding: 20px;
     transition: color 0.2s ease-in;
-    display: block;
   }
   &:hover {
     a {
       color: ${(props) => props.theme.accentColor};
     }
   }
+`;
+
+const Img = styled.img`
+  width: 35px;
+  height: 35px;
+  margin-right: 10px;
 `;
 
 const Loader = styled.span`
