@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
 import { Switch, Route, useLocation, useParams, useRouteMatch } from "react-router";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { useQuery } from "react-query";
 import { Helmet } from "react-helmet";
+import { HomeFilled } from '@ant-design/icons';
 
 import { fetchCoinInfo, fetchCoinPrice } from "../api";
 import Chart from "./Chart";
@@ -70,7 +70,7 @@ interface PriceData {
       volume_24h_change_24h: number;
     };
   };
-  }
+}
 
 
 const Coin = () => {
@@ -98,6 +98,7 @@ const Coin = () => {
         </title>
       </Helmet>
       <Header>
+        <Link to={"/"}><HomeFilled /></Link>
         <Title>
           {state?.name ? state.name : loading ? "Loading 😅" : infoData?.name}
         </Title>
@@ -135,7 +136,7 @@ const Coin = () => {
                <Chart coinId={coinId} />
              </Route>
              <Route path={`/:coinId/price`}>
-               <Price />
+               <Price coinId={coinId}/>
              </Route>
            </Switch>
         </>
@@ -147,7 +148,7 @@ const Coin = () => {
 export default Coin;
 
 const Title = styled.h1`
-  font-size: 48px;
+  font-size: 45px;
   color: ${(props) => props.theme.accentColor};
 `;
 
@@ -164,12 +165,20 @@ const Container = styled.div`
 
 const Header = styled.header`
   height: 15vh;
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
+  a{
+    position: absolute;
+    left: 0;
+    color:#636e72;
+    font-size: 45px;
+  }
 `;
 
 const SubTitle = styled.h1`
+  margin-top:15px;
   font-size: 20px;
   color:#00b894;
   font-weight:bolder;
