@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { useQuery } from "react-query";
+import { Helmet } from "react-helmet";
 
 import { fetchCoins } from "../api";
 
@@ -21,8 +22,11 @@ const Coins = () => {
   
   return(
     <Container>
+      <Helmet>
+        <title>CoinViewer</title>
+      </Helmet>
       <Header>
-        <Title>암호화폐</Title>
+        <Title>CoinViewer</Title>
       </Header>
       {isLoading ?  <Loader>Loading 😅</Loader>  :  
         <CoinsList>

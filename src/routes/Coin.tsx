@@ -3,6 +3,7 @@ import { Switch, Route, useLocation, useParams, useRouteMatch } from "react-rout
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { useQuery } from "react-query";
+import { Helmet } from "react-helmet";
 
 import { fetchCoinInfo, fetchCoinPrice } from "../api";
 import Chart from "./Chart";
@@ -79,12 +80,23 @@ const Coin = () => {
   const chartMatch = useRouteMatch("/:coinId/chart");
 
   const { isLoading: infoLoading, data: infoData } = useQuery<InfoData>(["info", coinId], () => fetchCoinInfo(coinId));
-  const { isLoading: priceLoading, data: priceData } = useQuery<PriceData>(["price", coinId], () => fetchCoinPrice(coinId));
+  const { isLoading: priceLoading, data: priceData } = useQuery<PriceData>(
+    ["price", coinId], 
+    () => fetchCoinPrice(coinId),
+    {
+      refetchInterval: 5000,   //5초마다 패치
+    }
+  );
   
   const loading = infoLoading || priceLoading;
 
   return (
     <Container>
+      <Helmet>
+        <title>
+          {state?.name ? state.name : loading ? "Loading" : infoData?.name}
+        </title>
+      </Helmet>
       <Header>
         <Title>
           {state?.name ? state.name : loading ? "Loading 😅" : infoData?.name}
@@ -106,8 +118,8 @@ const Coin = () => {
               <span>{infoData?.symbol}</span>
             </OverviewItem>
             <OverviewItem>
-              <span>타입</span>
-              <span>{infoData?.type}</span>
+              <span>가격</span>
+              <span>$ {priceData?.quotes.USD.price.toFixed(0)}</span>
             </OverviewItem>
            </Overview>
            <Tabs>
@@ -177,7 +189,7 @@ const OverviewItem = styled.div`
   flex-direction: column;
   align-items: center;
   span:first-child {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 400;
     text-transform: uppercase;
   }
