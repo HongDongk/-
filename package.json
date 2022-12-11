@@ -51,7 +51,7 @@
       "last 1 firefox version",
       "last 1 safari version"
     ],
-    "homepage": "https://hongdongk.github.io/CoinViewer"
+    "homepage": "https://hongdongk.github.io/CoinViewer/"
   },
   "devDependencies": {
     "@types/react-helmet": "^6.1.6",
