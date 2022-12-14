@@ -5,7 +5,6 @@ import { Helmet } from "react-helmet";
 import { useSetRecoilState } from "recoil";
 
 import { Switch } from 'antd';
-import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { fetchCoins } from "../api";
 import { isDarkAtom } from "../atoms";
 
