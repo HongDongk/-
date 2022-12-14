@@ -89,7 +89,7 @@ const PriceBox = styled.div`
   margin:30px 0;
   display: flex;
   flex-wrap:wrap;
-  background-color: #636e72;
+  background-color: ${(props) => props.theme.cardBgColor};
   padding: 20px 20px;
   border-radius: 10px;
 `;

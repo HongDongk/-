@@ -2,8 +2,12 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { useQuery } from "react-query";
 import { Helmet } from "react-helmet";
+import { useSetRecoilState } from "recoil";
 
+import { Switch } from 'antd';
+import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { fetchCoins } from "../api";
+import { isDarkAtom } from "../atoms";
 
 interface CoinInsData {
   id: string;
@@ -17,9 +21,14 @@ interface CoinInsData {
 
 
 const Coins = () => {
+
+  const setDarkAtom = useSetRecoilState(isDarkAtom);
+  const toggleDark = () => {
+    setDarkAtom((prev) => !prev);
+  }
   
   const { isLoading, data } = useQuery<CoinInsData[]>(["allCoins"], fetchCoins);
-  
+
   return(
     <Container>
       <Helmet>
@@ -27,6 +36,11 @@ const Coins = () => {
       </Helmet>
       <Header>
         <Title>CoinViewer</Title>
+        <SSwitch
+          onChange={toggleDark}
+          checkedChildren="🌙"
+          unCheckedChildren="🌞"
+        />
       </Header>
       {isLoading ?  <Loader>Loading 😅</Loader>  :  
         <CoinsList>
@@ -56,6 +70,7 @@ const Container = styled.div`
 `;
 
 const Header = styled.header`
+  position:relative;
   height: 15vh;
   display: flex;
   justify-content: center;
@@ -68,17 +83,22 @@ const Title = styled.h1`
   font-weight:bolder;
 `;
 
+const SSwitch = styled(Switch)`
+  position:absolute;
+  right:0;
+`;
+
 const CoinsList = styled.ul`
 `;
 
 const Coin = styled.li`
-  background-color:#dfe6e9;
+  background-color:${(props)=> props.theme.cardBgColor};
   border-radius: 15px;
   margin-bottom: 10px;
   a {
     display: flex;
     align-items: center;
-    color: ${(props) => props.theme.bgColor};
+    color: ${(props) => props.theme.textColor};
     padding: 20px;
     transition: color 0.2s ease-in;
   }
