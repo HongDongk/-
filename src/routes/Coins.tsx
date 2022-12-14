@@ -38,8 +38,8 @@ const Coins = () => {
         <Title>CoinViewer</Title>
         <SSwitch
           onChange={toggleDark}
-          checkedChildren="🌙"
-          unCheckedChildren="🌞"
+          checkedChildren="🌞"
+          unCheckedChildren="🌙"
         />
       </Header>
       {isLoading ?  <Loader>Loading 😅</Loader>  :  
