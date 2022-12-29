@@ -1,4 +1,5 @@
 import { useQuery } from "react-query";
+import { useOutletContext } from "react-router-dom";
 import { fetchCoinPrice } from "../api";
 import { RiseOutlined, FallOutlined, LineOutlined } from '@ant-design/icons';
 import styled from "styled-components";
@@ -41,7 +42,9 @@ interface PriceData {
   };
 }
 
-const Price = ({ coinId }: PriceProps) => {
+const Price = () => {
+
+  const { coinId } = useOutletContext<PriceProps>();
 
   const { isLoading, data } = useQuery<PriceData>(["price",coinId], () => fetchCoinPrice(coinId));
   const hourprice = Number(data?.quotes.USD.percent_change_1h)

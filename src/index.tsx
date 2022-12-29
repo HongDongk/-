@@ -1,8 +1,9 @@
-import React from 'react';
 import ReactDOM from 'react-dom/client';
-import App from './App';
 import { QueryClient, QueryClientProvider } from "react-query";
+import { RouterProvider } from 'react-router';
 import { RecoilRoot } from 'recoil';
+
+import Router from './Router';
 
 const queryClient = new QueryClient();
 
@@ -12,7 +13,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <RecoilRoot>
     <QueryClientProvider client={queryClient}>
-      <App />
+      <RouterProvider router = {Router}/>
     </QueryClientProvider>
   </RecoilRoot>
 );

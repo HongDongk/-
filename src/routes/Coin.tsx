@@ -1,21 +1,11 @@
-import { Switch, Route, useLocation, useParams, useRouteMatch } from "react-router";
-import { Link } from "react-router-dom";
+import { useLocation, Outlet, useMatch} from "react-router";
+import { Link , useParams} from "react-router-dom";
 import styled from "styled-components";
 import { useQuery } from "react-query";
 import { Helmet } from "react-helmet";
 import { HomeFilled } from '@ant-design/icons';
 
 import { fetchCoinInfo, fetchCoinPrice } from "../api";
-import Chart from "./Chart";
-import Price from "./Price";
-
-interface RouteParams {
-  coinId: string;
-};
-
-interface RouteState {
-  name: string;
-}
 
 interface InfoData {
   id: string;
@@ -74,15 +64,13 @@ interface PriceData {
 
 
 const Coin = () => {
-  const { coinId } = useParams<RouteParams>();
-  const { state } = useLocation<RouteState>();
-  const priceMatch = useRouteMatch("/:coinId/price");
-  const chartMatch = useRouteMatch("/:coinId/chart");
+  const { coinId } = useParams();
+  const { state } = useLocation();
+  const priceMatch = useMatch("/:coinId/price");
+  const chartMatch = useMatch("/:coinId/chart");
 
-  const { isLoading: infoLoading, data: infoData } = useQuery<InfoData>(["info", coinId], () => fetchCoinInfo(coinId));
-  const { isLoading: priceLoading, data: priceData } = useQuery<PriceData>(
-    ["price", coinId], 
-    () => fetchCoinPrice(coinId),
+  const { isLoading: infoLoading, data: infoData } = useQuery<InfoData>( ["info", coinId], () => fetchCoinInfo(String(coinId)));
+  const { isLoading: priceLoading, data: priceData } = useQuery<PriceData>( ["price", coinId], () => fetchCoinPrice(String(coinId)),
     {
       refetchInterval: 5000,   //5초마다 패치
     }
@@ -131,14 +119,10 @@ const Coin = () => {
                <Link to={`/${coinId}/price`}>Price</Link>
              </Tab>
            </Tabs>
-           <Switch>
-             <Route path={`/:coinId/chart`}>
-               <Chart coinId={coinId} />
-             </Route>
-             <Route path={`/:coinId/price`}>
-               <Price coinId={coinId}/>
-             </Route>
-           </Switch>
+           <Outlet context={{
+              coinId: String(coinId),
+            }}
+           />
         </>
       }
     </Container>

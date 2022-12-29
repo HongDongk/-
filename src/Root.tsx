@@ -2,9 +2,8 @@ import { createGlobalStyle, ThemeProvider } from "styled-components";
 import { darkTheme, lightTheme } from "./theme";
 import { useRecoilValue } from "recoil";
 import { Reset } from 'styled-reset';
-import Router from "./Router";
-
 import { isDarkAtom } from "./atoms";
+import { Outlet } from "react-router";
 
 const GlobalStyle = createGlobalStyle`
   @import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400&display=swap');
@@ -31,7 +30,7 @@ function App() {
       <ThemeProvider theme={isDark ? darkTheme : lightTheme}>
         <Reset/>
         <GlobalStyle />
-        <Router />
+        <Outlet/>
       </ThemeProvider>
     </>
   );
