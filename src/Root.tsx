@@ -21,7 +21,7 @@ const GlobalStyle = createGlobalStyle`
   }
 `;
 
-function App() {
+function Root() {
   
   const isDark = useRecoilValue(isDarkAtom);
 
@@ -36,4 +36,4 @@ function App() {
   );
 }
 
-export default App;
+export default Root;
