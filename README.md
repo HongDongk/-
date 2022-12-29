@@ -5,6 +5,6 @@
 ### ✅ Using
 - Styled Components
 - React query
-- React Router DOM v6
+- React Router Dom_v6
 - Typescript
 - ApexChart
